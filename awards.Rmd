@@ -1,0 +1,23 @@
+---
+title: "awards"
+output: html_document
+---
+
+```{r load-packages, message = TRUE}
+library(tidyverse) 
+library(skimr)
+```
+
+```{r load-data, message = TRUE, eval = TRUE}
+awards <- read_csv("data/awards.csv") 
+```
+
+```{r showdata, error=TRUE}
+glimpse(awards)
+```
+
+```{r}
+ggplot(awards, aes(x=award, color=pos))+
+geom_bar()
+```
+

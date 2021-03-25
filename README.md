@@ -1,9 +1,19 @@
 # Group-Project
-Proposal: 
-Question: How different is the geographic breakdown of players in the NBA compared to the MLB?
-We will compare the most common countries of origin in each of these sports and see how different they are to each other. We will also investigate why there are such different geographics when it comes to these two sports. 
+``` {r install}
+library(tidyverse)
+```
 
-OR
+1) Question: Which position in the NBA is most likely to win an award (MVP, First-Team, Rookie of the Year)?
 
-How did the bubble/having no fans impact players shooting/stats? (look at stats from this past season vs. normal season)
-We would see if fans have a big impact on shooting the ball well/poorly (depending on who is home)
+variables: position, type of award, player ID
+cases: each NBA player who has won award since 1946
+data from: Open Source Sports Website
+
+2) 1719 rows, 6 columns
+
+
+3)
+Response: frequency of MVP, NBA First-Team, and Rookie of Year among G,F and C
+Explanatory: type of award
+
+We made tentative graph but need to select certain awards and format it better. 
