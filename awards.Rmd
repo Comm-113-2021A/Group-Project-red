@@ -1,0 +1,34 @@
+---
+title: "awards"
+author: "Red Team"
+output: html_document
+---
+
+```{r load-packages, message = TRUE}
+library(tidyverse) 
+library(skimr)
+```
+
+```{r load-data, message = TRUE, eval = TRUE}
+awards <- read_csv("data/awards.csv") 
+```
+
+```{r showdata, error=TRUE}
+glimpse(awards)
+```
+
+There are `r nrow(awards)` observations and `r ncol(awards)` variables in the data.
+
+
+```{r}
+ggplot(awards, aes(x=award, color=pos))+
+geom_bar(position="dodge")
+```
+
+```{r}
+ggplot(data=awards, aes(x=year, y=pos))+
+         geom_point()+
+         geom_smooth(method="lm")
+```
+
+
