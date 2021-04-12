@@ -1,7 +1,7 @@
 ---
-title: "Presentation title"
-subtitle: "Presentation subtitle (if any)"
-author: "Team name <br> Names of team members"
+title: "Prediction of what position is more likely to win the NBA end of season awards"
+subtitle: "Is there a relationship between position and winning an award?"
+author: "Red Team <br> Naomi Korn, Stephen Chen, Zach Slavitt"
 date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
@@ -21,6 +21,7 @@ library(tidymodels)
 library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
+library(showtext)
 ```
 
 ```{r setup, include=FALSE}
