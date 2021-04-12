@@ -1,6 +1,7 @@
-Project title
+Prediction of what position is more likely to win the NBA end of season
+awards
 ================
-by Team name
+Red Team
 
 ## Summary
 

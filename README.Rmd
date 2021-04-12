@@ -1,6 +1,6 @@
 ---
-title: Project title
-author: by Team name
+title: Prediction of what position is more likely to win the NBA end of season awards
+author: Red Team
 output: github_document
 ---
 
