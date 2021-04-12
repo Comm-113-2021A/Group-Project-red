@@ -25,8 +25,7 @@ your project.
 
 ## Presentation
 
-Our presentation can be found [here](presentation/presentation.html).
-
+Our presentation can be found  https://comm-113-2021a.github.io/Group-Project-red/
 ## Data
 
 Include a citation for your data here. See
