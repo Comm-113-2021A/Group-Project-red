@@ -6,6 +6,11 @@ output: github_document
 
 ## Summary
 
+For our project we decided to look at a dataset of the top 10 players in the mvp race for several NBA seasons. We then compared the player stats between the nominated mvp and the other top 9 runner ups in order to determine which player stat best correlated with overall performance in the mvp race and rankings. 
+
+In order to begin, we first compiled data from "https://raw.githubusercontent.com/dribbleanalytics/ml-mvp-predict/master/2018-19-season/asb/final-csv-data/historical-mvps.csv" and loaded it into our project's data folder. 
+
+
 Write-up of your project and findings go here. 
 Think of this as the text of your presentation. 
 The length should be roughly 5 minutes when read out loud.
