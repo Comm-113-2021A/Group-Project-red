@@ -30,7 +30,23 @@ knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618,
 ```
 
 ```{r load-data, include=FALSE}
-# Load your data here
+library(readr)
+mvps <- read_csv("presentation_files/historical-mvps.csv")
+
+```
+
+```{r}
+mvps <- mvps %>% 
+  rename(
+    team_wins = "Team Wins",
+    pts_won = "Pts Won",
+    overall_seed = "Overall Seed"
+  )
+```
+```{r}
+onlymvps <- mvps %>%
+  filter(Rank == 1)
+
 ```
 
 ```{r}
@@ -42,8 +58,15 @@ style_xaringan(
 
 class: center, middle
 
-## A statement of the overall goal / research question
-
+## What is strongest predic
+correlations
+  points and MVP
+  height and frequency
+  age and frequency
+  # of MVPs after winning 1 - what percentage of MVPs won one versus won multiple?
+  age and MVP
+  pick and MVP
+  
 ---
 
 class: inverse, center, middle
@@ -100,29 +123,76 @@ or text in two columns $^*$
 
 # Code
 
-```{r boring-regression}
+```{r boring-regression, eval=TRUE}
 # a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
+onlymvpmodel <- lm(PTS ~ team_wins, data = onlymvps)
+tidy(onlymvpmodel)
+glance(onlymvpmodel)
 ```
+
+```{r boring-regression, eval=TRUE}
+# a boring regression
+ggplot(onlymvps, aes(x= PTS, y= team_wins))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+```
+
+
+```{r boring-regression, eval=TRUE}
+# a boring regression
+mvpmodel <- lm(PTS ~ team_wins, data = mvps)
+tidy(mvpmodel)
+glance(mvpmodel)
+```
+```{r boring-regression, eval=TRUE}
+# a boring regression
+ggplot(mvps, aes(x= PTS, y= team_wins))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+```
+
+```{r}
+ggplot(mvps, aes(x=Rank, y=overall_seed)) +
+  geom_jitter()
+```
+
+```{r}
+ggplot(mvps, aes(x=overall_seed, fill= Rank)) +
+  geom_bar()
+```
+
 
 ---
 
 # Plots
 
-```{r recode-species, echo = FALSE}
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-iris_modified <- iris %>%
-  mutate(Species = fct_other(Species, keep = "setosa"))
+
+```{r positioncount, echo = FALSE}
+ggplot(data=mvps, mapping=aes(x=BPM, y=Rank))+
+geom_point()
 ```
+```{r positioncount2, echo = FALSE}
+ggplot(data=mvps, mapping=aes(x= overall_seed, y= pts_won))+
+geom_jitter()
+```
+```{r positioncount5, echo = FALSE}
+ggplot(data=mvps, mapping=aes(x= overall_seed, y= WS/48))+
+geom_jitter()
+```
+
+
+
+
+
+
 
 ```{r plot-iris, echo = FALSE}
 # Code hidden with echo = FALSE
 # Uses modified iris dataset from previous chunk
 # Play around with height and width until you're happy with the look
-ggplot(data = iris_modified, mapping = aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+ggplot(data = mvps, mapping = aes(x = team_wins, y = Age, color = Rank)) +
   geom_point() + 
   theme_minimal() # theme options: https://ggplot2.tidyverse.org/reference/ggtheme.html
 ```
@@ -139,7 +209,7 @@ ggplot(data = iris_modified, mapping = aes(x = Sepal.Width, y = Sepal.Length, co
 ```{r warning=FALSE, out.width="100%", fig.width=4, echo=FALSE}
 # see how I changed out.width and fig.width from defaults
 # to make the figure bigger
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
+ggplot(mvps, aes(x = team_wins, y = Age, color = Rank)) +
   geom_boxplot() +
   theme_minimal()
 ```
@@ -152,7 +222,7 @@ ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
 If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
 
 ```{r iris-table, echo = FALSE}
-kable(head(iris), format = "html")
+kable(head(mvps), format = "html")
 ```
 
 ---

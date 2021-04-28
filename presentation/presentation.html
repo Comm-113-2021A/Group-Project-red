@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Prediction of who will win the NBA end of season awards</title>
+    <title>Prediction of what position is more likely to win the NBA end of season awards</title>
     <meta charset="utf-8" />
     <meta name="author" content="Red Team   Naomi Korn, Stephen Chen, Zach Slavitt" />
-    <meta name="date" content="2021-04-12" />
+    <meta name="date" content="2021-04-28" />
     <script src="libs/header-attrs-2.7/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -12,10 +12,10 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Prediction of who will win the NBA end of season awards
+# Prediction of what position is more likely to win the NBA end of season awards
 ## Is there a relationship between position and winning an award?
 ### Red Team <br> Naomi Korn, Stephen Chen, Zach Slavitt
-### 2021-04-12
+### 2021-04-28
 
 ---
 
@@ -28,6 +28,16 @@ class: center, middle, inverse, title-slide
 
 
 ```r
+mvps &lt;- mvps %&gt;% 
+  rename(
+    team_wins = "Team Wins",
+    pts_won = "Pts Won",
+    overall_seed = "Overall Seed"
+  )
+```
+
+
+```r
 style_xaringan(
   title_slide_background_image = "img/confetti.jpg"
 )
@@ -36,8 +46,15 @@ style_xaringan(
 
 class: center, middle
 
-## A statement of the overall goal / research question
-
+## What is strongest predic
+correlations
+  points and MVP
+  height and frequency
+  age and frequency
+  # of MVPs after winning 1 - what percentage of MVPs won one versus won multiple?
+  age and MVP
+  pick and MVP
+  
 ---
 
 class: inverse, center, middle
@@ -97,33 +114,47 @@ or text in two columns `\(^*\)`
 
 ```r
 # a boring regression
-model &lt;- lm(dist ~ speed, data = cars)
-tidy(model)
+mvpmodel &lt;- lm(Rank ~ overall_seed, data = mvps)
+tidy(mvpmodel)
 ```
 
 ```
 ## # A tibble: 2 x 5
-##   term        estimate std.error statistic  p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
-## 2 speed           3.93     0.416      9.46 1.49e-12
+##   term         estimate std.error statistic  p.value
+##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)     4.31     0.225      19.2  4.80e-58
+## 2 overall_seed    0.186    0.0292      6.36 5.80e-10
 ```
+
 
 ```r
-glance(model)
+ggplot(mvps, aes(x=Rank, y=overall_seed)) +
+  geom_jitter()
 ```
 
+&lt;img src="presentation_files/figure-html/unnamed-chunk-3-1.png" width="80%" /&gt;
+
+
+```r
+ggplot(mvps, aes(x=overall_seed, fill= Rank)) +
+  geom_bar()
 ```
-## # A tibble: 1 x 12
-##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     0.651         0.644  15.4      89.6 1.49e-12     1  -207.  419.  425.
-## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
-```
+
+&lt;img src="presentation_files/figure-html/unnamed-chunk-4-1.png" width="80%" /&gt;
+
 
 ---
 
 # Plots
+
+
+&lt;img src="presentation_files/figure-html/positioncount-1.png" width="80%" /&gt;
+&lt;img src="presentation_files/figure-html/positioncount2-1.png" width="80%" /&gt;
+&lt;img src="presentation_files/figure-html/positioncount5-1.png" width="80%" /&gt;
+
+
+
+
 
 
 
@@ -138,7 +169,7 @@ glance(model)
 - goes here
 ]
 .pull-right[
-&lt;img src="presentation_files/figure-html/unnamed-chunk-2-1.png" width="100%" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-5-1.png" width="100%" /&gt;
 ]
 
 ---
@@ -150,55 +181,209 @@ If you want to generate a table, make sure it is in the HTML format (instead of 
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; Sepal.Length &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Sepal.Width &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Petal.Length &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Petal.Width &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Species &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Rank &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Age &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Tm &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pts_won &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Pts Max &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Share &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; G &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; team_wins &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; overall_seed &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; MP &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; PTS &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; TRB &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; AST &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; STL &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; BLK &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; FG% &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; 3P% &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; FT% &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; WS &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; WS/48 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; VORP &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; BPM &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; G-Lockout &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Wins-Lockout &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; WS-Lockout &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; VORP-Lockout &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kareem Abdul-Jabbar &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; LAL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 147.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.665 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.604 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.765 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.227 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Julius Erving &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; PHI &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 78 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 59 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.519 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.200 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.787 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.213 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; George Gervin &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SAS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.086 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 78 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 33.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.6 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.528 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.314 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.852 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.173 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Larry Bird &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BOS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 15.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.068 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 61 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 1.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.474 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.406 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.836 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.182 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tiny Archibald &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BOS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 61 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.482 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.222 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.830 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.148 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Dennis Johnson &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SEA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 81 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 56 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.422 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.207 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.780 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.120 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
