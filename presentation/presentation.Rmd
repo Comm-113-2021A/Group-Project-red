@@ -16,6 +16,7 @@ output:
 
 ```{r load-packages, include = FALSE}
 # Add any additional packages you need to this chunk
+
 library(tidyverse)
 library(tidymodels)
 library(palmerpenguins)
@@ -32,6 +33,7 @@ knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618,
 ```{r load-data, include=FALSE}
 library(readr)
 mvps <- read_csv("presentation_files/historical-mvps.csv")
+view(mvps)
 
 ```
 
@@ -152,6 +154,14 @@ ggplot(mvps, aes(x= PTS, y= team_wins))+
   geom_smooth(method = "lm")
 
 ```
+```{r ftpercent, eval=TRUE}
+ggplot(mvps, aes(x= PTS, y= MP))+
+  geom_point()+
+  geom_smooth(method = "lm")
+
+```
+
+
 
 ```{r}
 ggplot(mvps, aes(x=Rank, y=overall_seed)) +
