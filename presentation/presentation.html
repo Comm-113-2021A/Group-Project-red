@@ -36,10 +36,21 @@ mvps &lt;- mvps %&gt;%
   )
 ```
 
+```r
+onlymvps &lt;- mvps %&gt;%
+  filter(Rank == 1)
+view(onlymvps)
+```
+
+```r
+nonmvps &lt;- mvps %&gt;%
+  filter(Rank != 1)
+view(nonmvps)
+```
 
 ```r
 style_xaringan(
-  title_slide_background_image = "img/confetti.jpg"
+  title_slide_background_image = "img/sports.jpg"
 )
 ```
 
@@ -114,17 +125,97 @@ or text in two columns `\(^*\)`
 
 ```r
 # a boring regression
-mvpmodel &lt;- lm(Rank ~ overall_seed, data = mvps)
+onlymvpmodel &lt;- lm(PTS ~ team_wins, data = onlymvps)
+tidy(onlymvpmodel)
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  32.2        6.71      4.80  0.0000265
+## 2 team_wins    -0.0875     0.109    -0.803 0.427
+```
+
+```r
+glance(onlymvpmodel)
+```
+
+```
+## # A tibble: 1 x 12
+##   r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1    0.0171      -0.00943  3.87     0.645   0.427     1  -107.  220.  225.
+## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
+```
+
+
+```r
+# a boring regression
+ggplot(onlymvps, aes(x= PTS, y= team_wins))+
+  geom_point()+
+  geom_smooth(method = "lm")
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="presentation_files/figure-html/boring-regression2-1.png" width="80%" /&gt;
+
+```r
+ggplot() +
+  geom_bar(data = onlymvps, aes(Age, fill="blue")) + 
+  geom_bar(data = nonmvps, aes(Age, fill= "r"))
+```
+
+&lt;img src="presentation_files/figure-html/mvpvsnonmvp-1.png" width="80%" /&gt;
+
+```
+
+
+```r
+# a boring regression
+mvpmodel &lt;- lm(PTS ~ team_wins, data = mvps)
 tidy(mvpmodel)
 ```
 
 ```
 ## # A tibble: 2 x 5
-##   term         estimate std.error statistic  p.value
-##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)     4.31     0.225      19.2  4.80e-58
-## 2 overall_seed    0.186    0.0292      6.36 5.80e-10
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   29.0      1.69       17.2  1.78e-49
+## 2 team_wins     -0.101    0.0311     -3.23 1.33e- 3
 ```
+
+```r
+glance(mvpmodel)
+```
+
+```
+## # A tibble: 1 x 12
+##   r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1    0.0264        0.0239  4.60      10.5 0.00133     1 -1142. 2290. 2301.
+## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
+```
+
+
+```r
+# a boring regression
+ggplot(mvps, aes(x= PTS, y= team_wins))+
+  geom_point()+
+  geom_smooth(method = "lm")
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="presentation_files/figure-html/boring-regression3-1.png" width="80%" /&gt;
+
+
+
 
 
 ```r
@@ -132,7 +223,7 @@ ggplot(mvps, aes(x=Rank, y=overall_seed)) +
   geom_jitter()
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-3-1.png" width="80%" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-5-1.png" width="80%" /&gt;
 
 
 ```r
@@ -140,7 +231,7 @@ ggplot(mvps, aes(x=overall_seed, fill= Rank)) +
   geom_bar()
 ```
 
-&lt;img src="presentation_files/figure-html/unnamed-chunk-4-1.png" width="80%" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-6-1.png" width="80%" /&gt;
 
 
 ---
@@ -169,7 +260,7 @@ ggplot(mvps, aes(x=overall_seed, fill= Rank)) +
 - goes here
 ]
 .pull-right[
-&lt;img src="presentation_files/figure-html/unnamed-chunk-5-1.png" width="100%" /&gt;
+&lt;img src="presentation_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
 ]
 
 ---
@@ -410,7 +501,7 @@ background-image: url(https://images.unsplash.com/photo-1535448033526-c0e85c9e69
 You can write LaTeX math expressions inside a pair of dollar signs, e.g. &amp;#36;\alpha+\beta$ renders `\(\alpha+\beta\)`. You can use the display style with double dollar signs:
 
 ```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+`$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`
 ```
 
 `$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`

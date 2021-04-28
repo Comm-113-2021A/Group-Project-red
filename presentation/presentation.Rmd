@@ -1,6 +1,6 @@
 ---
-title: "Prediction of what position is more likely to win the NBA end of season awards"
-subtitle: "Is there a relationship between position and winning an award?"
+title: "Prediction of what stat is most useful in predicting MVP vote rankings"
+subtitle: "Is there a one stat that is more predictive than others?"
 author: "Red Team <br> Naomi Korn, Stephen Chen, Zach Slavitt"
 date: "`r Sys.Date()`"
 output:
@@ -23,6 +23,7 @@ library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
 library(showtext)
+library(openintro)
 ```
 
 ```{r setup, include=FALSE}
@@ -42,18 +43,23 @@ mvps <- mvps %>%
   rename(
     team_wins = "Team Wins",
     pts_won = "Pts Won",
-    overall_seed = "Overall Seed"
+    overall_seed = "Overall Seed",
+    fgpercent = "FG%"
   )
 ```
 ```{r}
 onlymvps <- mvps %>%
   filter(Rank == 1)
-
+view(onlymvps)
 ```
-
+```{r}
+nonmvps <- mvps %>%
+  filter(Rank != 1)
+view(nonmvps)
+```
 ```{r}
 style_xaringan(
-  title_slide_background_image = "img/confetti.jpg"
+  title_slide_background_image = "img/sports.jpg"
 )
 ```
 
@@ -125,41 +131,82 @@ or text in two columns $^*$
 
 # Code
 
-```{r boring-regression, eval=TRUE}
-# a boring regression
-onlymvpmodel <- lm(PTS ~ team_wins, data = onlymvps)
-tidy(onlymvpmodel)
-glance(onlymvpmodel)
-```
-
-```{r boring-regression, eval=TRUE}
-# a boring regression
-ggplot(onlymvps, aes(x= PTS, y= team_wins))+
-  geom_point()+
-  geom_smooth(method = "lm")
-
+```{r}
+pts_fit <- linear_reg() %>%
+  set_engine("lm") %>%
+  fit(Rank ~ PTS, data = mvps)
 ```
 
 
-```{r boring-regression, eval=TRUE}
-# a boring regression
-mvpmodel <- lm(PTS ~ team_wins, data = mvps)
-tidy(mvpmodel)
-glance(mvpmodel)
+```{r, eval=TRUE}
+ggplot(mvps, aes(x = Rank)) +
+  geom_density()
 ```
-```{r boring-regression, eval=TRUE}
+```{r point, eval=TRUE}
+ggplot(mvps, aes(x = Rank, y = PTS)) +
+  geom_jitter()
+```
+```{r profbeauty, eval=TRUE}
+pts_fit <- lm(Rank ~ PTS, data = mvps)
+tidy(pts_fit)
+glance(pts_fit)
+ggplot(data = mvps, aes(x = PTS, y = Rank)) +
+  geom_jitter() +
+   geom_smooth(method = "lm", se = FALSE, col="red")
+```
+
+```{r}
+pts_aug <- augment(pts_fit$fit)
+```
+
+```{r}
+names(pts_aug)
+```
+```{r residuals, eval=TRUE}
+pts_aug %>%
+ggplot(mapping = aes(x = .fitted, y = .resid)) +
+  geom_jitter() +
+ geom_hline(yintercept = 0)
+```
+```{r, eval=TRUE}
+rank_team_fit <- lm(Rank ~ team_wins, data = mvps)
+tidy(rank_team_fit)
+glance(rank_team_fit)
+```
+```{r}
+rank_ws_fit <- lm(Rank ~ WS, data = mvps)
+summary(rank_ws_fit)
+tidy(rank_ws_fit)
+```
+
+```{r genderfit, eval=TRUE}
+rank_PTS_team_wins_fit <- lm(Rank ~ PTS + team_wins, data = mvps)
+summary(rank_PTS_team_wins_fit)
+```
+
+```{r genderfit, eval=TRUE}
+glance(rank_PTS_team_wins_fit)
+r_value <- glance(rank_PTS_team_wins_fit)
+select(r.squared)%>%
+  pull()
+r_value_percent <- r_value * 100
+```
+```{r}
+rank_PTS_team_WS_fit <- lm(Rank ~ PTS + team_wins + WS, data = mvps)
+summary(rank_PTS_team_WS_fit)
+glance(rank_PTS_team_WS_fit)
+```
+
+
+
+```{r boring-regression3, eval=TRUE}
 # a boring regression
 ggplot(mvps, aes(x= PTS, y= team_wins))+
   geom_point()+
   geom_smooth(method = "lm")
 
 ```
-```{r ftpercent, eval=TRUE}
-ggplot(mvps, aes(x= PTS, y= MP))+
-  geom_point()+
-  geom_smooth(method = "lm")
 
-```
 
 
 
@@ -180,16 +227,22 @@ ggplot(mvps, aes(x=overall_seed, fill= Rank)) +
 
 
 ```{r positioncount, echo = FALSE}
-ggplot(data=mvps, mapping=aes(x=BPM, y=Rank))+
-geom_point()
+ggplot(data=mvps, mapping=aes(x=team_wins, y=Rank))+
+geom_jitter()+
+  geom_smooth(method="lm")
 ```
+
 ```{r positioncount2, echo = FALSE}
-ggplot(data=mvps, mapping=aes(x= overall_seed, y= pts_won))+
-geom_jitter()
+ggplot(data=mvps, mapping=aes(x= PTS, y= Rank))+
+geom_jitter()+
+geom_smooth(method = "lm")
 ```
+
+
 ```{r positioncount5, echo = FALSE}
-ggplot(data=mvps, mapping=aes(x= overall_seed, y= WS/48))+
-geom_jitter()
+ggplot(data=mvps, mapping=aes(x= WS, y= Rank))+
+geom_jitter()+
+geom_smooth(method="lm")
 ```
 
 
