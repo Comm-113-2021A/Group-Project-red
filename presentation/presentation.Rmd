@@ -1,6 +1,6 @@
 ---
-title: "Prediction of what stat is most useful in predicting MVP vote rankings"
-subtitle: "Is there a one stat that is more predictive than others?"
+title: "What stat is most useful in predicting MVP vote rankings?"
+subtitle: "We will use data from 1979-2018 NBA seasons"
 author: "Red Team <br> Naomi Korn, Stephen Chen, Zach Slavitt"
 date: "`r Sys.Date()`"
 output:
@@ -38,7 +38,7 @@ view(mvps)
 
 ```
 
-```{r}
+```{r, include=FALSE}
 mvps <- mvps %>% 
   rename(
     team_wins = "Team Wins",
@@ -47,290 +47,149 @@ mvps <- mvps %>%
     fgpercent = "FG%"
   )
 ```
-```{r}
-onlymvps <- mvps %>%
-  filter(Rank == 1)
-view(onlymvps)
-```
-```{r}
-nonmvps <- mvps %>%
-  filter(Rank != 1)
-view(nonmvps)
-```
-```{r}
+
+```{r, include=FALSE}
 style_xaringan(
-  title_slide_background_image = "img/sports.jpg"
+  title_slide_background_image = "img/red.jpg"
 )
 ```
 
 
 class: center, middle
 
-## What is strongest predic
-correlations
-  points and MVP
-  height and frequency
-  age and frequency
-  # of MVPs after winning 1 - what percentage of MVPs won one versus won multiple?
-  age and MVP
-  pick and MVP
+## What is strongest stat in predicting MVP rank?
+
   
 ---
 
 class: inverse, center, middle
 
-# Section title
+# We will look at...
+   #Points per game
+   #Team wins
+   #Win Shares
 
 ---
 
-# Hello World
-
-- Click the `Knit` button to compile your presentation
-
-- Make sure to commit and push all resulting files to your GitHub repo
-
----
-
-class: inverse, middle, center
-
-# Using xaringan
-
----
-
-# xaringan
-
-- The presentation is created using the `xaringan` package
-
-- Use `---` to separate slides and `--` for incremental builds
-
---
-
-- Like this
-
----
-
-# Layouts
-
-You can use plain text
-
-- or bullet points
-
+# Rank versus Points per Game
 .pull-left[
-or text in two columns $^*$
+- r^2 = 0.165
+- Not a strong correlation between increased rank and greater points per game
 ]
 .pull-right[
-- like
-- this
-]
-
-.footnote[
-[*] And add footnotes
-]
-
----
-
-# Code
-
-```{r}
-pts_fit <- linear_reg() %>%
-  set_engine("lm") %>%
-  fit(Rank ~ PTS, data = mvps)
-```
-
-
-```{r, eval=TRUE}
-ggplot(mvps, aes(x = Rank)) +
-  geom_density()
-```
-```{r point, eval=TRUE}
-ggplot(mvps, aes(x = Rank, y = PTS)) +
-  geom_jitter()
-```
-```{r profbeauty, eval=TRUE}
+```{r rankvspoints1, include=FALSE}
 pts_fit <- lm(Rank ~ PTS, data = mvps)
 tidy(pts_fit)
 glance(pts_fit)
+```
+```{r rankvspointsgraph, warning=FALSE, out.width="80%", fig.width=4, echo=FALSE}
 ggplot(data = mvps, aes(x = PTS, y = Rank)) +
   geom_jitter() +
    geom_smooth(method = "lm", se = FALSE, col="red")
 ```
+]
+---
 
-```{r}
-pts_aug <- augment(pts_fit$fit)
-```
+class: inverse, middle, center
 
-```{r}
-names(pts_aug)
-```
-```{r residuals, eval=TRUE}
-pts_aug %>%
-ggplot(mapping = aes(x = .fitted, y = .resid)) +
-  geom_jitter() +
- geom_hline(yintercept = 0)
-```
-```{r, eval=TRUE}
+# Rank versus Team Wins
+
+.pull-left[
+- r^2 = 0.0.983
+- Very weak correlation between rank and  team wins
+- One explanation of this could be that players  could be put in the top-10 just because they are on a good team, even though they have no chance of winning MVP
+]
+.pull-right[
+```{r rankversusteam, include=FALSE}
 rank_team_fit <- lm(Rank ~ team_wins, data = mvps)
 tidy(rank_team_fit)
 glance(rank_team_fit)
 ```
-```{r}
+
+```{r teamwinsplot, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
+ggplot(data=mvps, mapping=aes(x=team_wins, y=Rank))+
+geom_jitter()+
+  geom_smooth(method="lm", se=FALSE)
+```
+]
+---
+
+
+# Rank versus Win Shares
+
+.pull-left[
+- Win share: a measure that is assigned to players based on their offense, defense, and playing time. A win share is worth one-third of a team win. If a team wins 60 games, there are 180 'Win Shares' to distribute among the players.
+
+- r^2 = 0.3932
+- Stronger correlation between rank and win shares than the other statistics observed
+]
+.pull-right[
+
+```{r rankvsWS, include=FALSE}
 rank_ws_fit <- lm(Rank ~ WS, data = mvps)
 summary(rank_ws_fit)
 tidy(rank_ws_fit)
 ```
 
-```{r genderfit, eval=TRUE}
+```{r wsplott, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
+ggplot(data=mvps, mapping=aes(x=WS, y=Rank))+
+geom_jitter()+
+  geom_smooth(method="lm", se=FALSE )
+```
+]
+
+
+---
+
+# Combining Variables
+
+.pull-left[
+```{r rankfit, include=FALSE}
 rank_PTS_team_wins_fit <- lm(Rank ~ PTS + team_wins, data = mvps)
 summary(rank_PTS_team_wins_fit)
 ```
+```{r ptsandteamplot, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
+ggplot(data=mvps, mapping=aes(x= PTS + team_wins, y=Rank))+
+geom_jitter()+
+  geom_smooth(method="lm", se=FALSE )
+```
 
-```{r genderfit, eval=TRUE}
+```{r rankfit2, include=FALSE}
 glance(rank_PTS_team_wins_fit)
 r_value <- glance(rank_PTS_team_wins_fit)
-select(r.squared)%>%
-  pull()
-r_value_percent <- r_value * 100
+
 ```
-```{r}
+```{r rankfit3, include=FALSE}
 rank_PTS_team_WS_fit <- lm(Rank ~ PTS + team_wins + WS, data = mvps)
 summary(rank_PTS_team_WS_fit)
 glance(rank_PTS_team_WS_fit)
 ```
-
-
-
-```{r boring-regression3, eval=TRUE}
-# a boring regression
-ggplot(mvps, aes(x= PTS, y= team_wins))+
-  geom_point()+
-  geom_smooth(method = "lm")
-
-```
-
-
-
-
-```{r}
-ggplot(mvps, aes(x=Rank, y=overall_seed)) +
-  geom_jitter()
-```
-
-```{r}
-ggplot(mvps, aes(x=overall_seed, fill= Rank)) +
-  geom_bar()
-```
-
-
----
-
-# Plots
-
-
-```{r positioncount, echo = FALSE}
-ggplot(data=mvps, mapping=aes(x=team_wins, y=Rank))+
-geom_jitter()+
-  geom_smooth(method="lm")
-```
-
-```{r positioncount2, echo = FALSE}
-ggplot(data=mvps, mapping=aes(x= PTS, y= Rank))+
-geom_jitter()+
-geom_smooth(method = "lm")
-```
-
-
-```{r positioncount5, echo = FALSE}
-ggplot(data=mvps, mapping=aes(x= WS, y= Rank))+
-geom_jitter()+
-geom_smooth(method="lm")
-```
-
-
-
-
-
-
-
-```{r plot-iris, echo = FALSE}
-# Code hidden with echo = FALSE
-# Uses modified iris dataset from previous chunk
-# Play around with height and width until you're happy with the look
-ggplot(data = mvps, mapping = aes(x = team_wins, y = Age, color = Rank)) +
-  geom_point() + 
-  theme_minimal() # theme options: https://ggplot2.tidyverse.org/reference/ggtheme.html
-```
-
----
-
-## Plot and text
-
-.pull-left[
-- Some text
-- goes here
 ]
 .pull-right[
-```{r warning=FALSE, out.width="100%", fig.width=4, echo=FALSE}
-# see how I changed out.width and fig.width from defaults
-# to make the figure bigger
-ggplot(mvps, aes(x = team_wins, y = Age, color = Rank)) +
-  geom_boxplot() +
-  theme_minimal()
+```{r allvariableplot, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
+ggplot(data=mvps, mapping=aes(x=WS+team_wins+PTS, y=Rank))+
+geom_jitter()+
+  geom_smooth(method="lm", se=FALSE )
 ```
 ]
 
----
 
-# Tables
+- The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473.
 
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-```{r iris-table, echo = FALSE}
-kable(head(mvps), format = "html")
-```
 
 ---
 
-# Images
+# Conclusion
 
-```{r castle, echo = FALSE, out.width = "60%", fig.align = "center", fig.cap = "Image credit: Photo by Jörg Angeli on Unsplash."}
-include_graphics("https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80")
-```
+- WS is best single predictor out of the 3 we examined
+- The more variables, the better the model would be
+- Overall, no single stat determines who wins MVP, but rather an holistic view
 
-Or you can also include a full page image. See next slide.
 
----
 
-background-image: url(https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80)
 
----
 
-# Math Expressions
 
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &#36;\alpha+\beta$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
-
-```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-```
-
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-
-Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
 
 ---
 
-# Feeling adventurous?
-
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
-
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
-
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
-
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.

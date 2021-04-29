@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Prediction of what position is more likely to win the NBA end of season awards</title>
+    <title>What stat is most useful in predicting MVP vote rankings?</title>
     <meta charset="utf-8" />
     <meta name="author" content="Red Team   Naomi Korn, Stephen Chen, Zach Slavitt" />
-    <meta name="date" content="2021-04-28" />
+    <meta name="date" content="2021-04-29" />
     <script src="libs/header-attrs-2.7/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -12,10 +12,10 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Prediction of what position is more likely to win the NBA end of season awards
-## Is there a relationship between position and winning an award?
+# What stat is most useful in predicting MVP vote rankings?
+## We will use data from 1979-2018 NBA seasons
 ### Red Team <br> Naomi Korn, Stephen Chen, Zach Slavitt
-### 2021-04-28
+### 2021-04-29
 
 ---
 
@@ -27,505 +27,130 @@ class: center, middle, inverse, title-slide
 
 
 
-```r
-mvps &lt;- mvps %&gt;% 
-  rename(
-    team_wins = "Team Wins",
-    pts_won = "Pts Won",
-    overall_seed = "Overall Seed"
-  )
-```
 
-```r
-onlymvps &lt;- mvps %&gt;%
-  filter(Rank == 1)
-view(onlymvps)
-```
 
-```r
-nonmvps &lt;- mvps %&gt;%
-  filter(Rank != 1)
-view(nonmvps)
-```
-
-```r
-style_xaringan(
-  title_slide_background_image = "img/sports.jpg"
-)
-```
 
 
 class: center, middle
 
-## What is strongest predic
-correlations
-  points and MVP
-  height and frequency
-  age and frequency
-  # of MVPs after winning 1 - what percentage of MVPs won one versus won multiple?
-  age and MVP
-  pick and MVP
+## What is strongest stat in predicting MVP rank?
+
   
 ---
 
 class: inverse, center, middle
 
-# Section title
+# We will look at...
+   #Points per game
+   #Team wins
+   #Win Shares
 
 ---
 
-# Hello World
+# Rank versus Points per Game
+.pull-left[
+- r^2 = 0.165
+- Not a strong correlation between increased rank and greater points per game
+]
+.pull-right[
 
-- Click the `Knit` button to compile your presentation
 
-- Make sure to commit and push all resulting files to your GitHub repo
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
 
+&lt;img src="presentation_files/figure-html/rankvspointsgraph-1.png" width="80%" /&gt;
+]
 ---
 
 class: inverse, middle, center
 
-# Using xaringan
-
----
-
-# xaringan
-
-- The presentation is created using the `xaringan` package
-
-- Use `---` to separate slides and `--` for incremental builds
-
---
-
-- Like this
-
----
-
-# Layouts
-
-You can use plain text
-
-- or bullet points
+# Rank versus Team Wins
 
 .pull-left[
-or text in two columns `\(^*\)`
+- r^2 = 0.0.983
+- Very weak correlation between rank and  team wins
+- One explanation of this could be that players  could be put in the top-10 just because they are on a good team, even though they have no chance of winning MVP
 ]
 .pull-right[
-- like
-- this
-]
-
-.footnote[
-[*] And add footnotes
-]
-
----
-
-# Code
 
 
-```r
-# a boring regression
-onlymvpmodel &lt;- lm(PTS ~ team_wins, data = onlymvps)
-tidy(onlymvpmodel)
-```
-
-```
-## # A tibble: 2 x 5
-##   term        estimate std.error statistic   p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 (Intercept)  32.2        6.71      4.80  0.0000265
-## 2 team_wins    -0.0875     0.109    -0.803 0.427
-```
-
-```r
-glance(onlymvpmodel)
-```
-
-```
-## # A tibble: 1 x 12
-##   r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1    0.0171      -0.00943  3.87     0.645   0.427     1  -107.  220.  225.
-## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
-```
-
-
-```r
-# a boring regression
-ggplot(onlymvps, aes(x= PTS, y= team_wins))+
-  geom_point()+
-  geom_smooth(method = "lm")
-```
 
 ```
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-&lt;img src="presentation_files/figure-html/boring-regression2-1.png" width="80%" /&gt;
-
-```r
-ggplot() +
-  geom_bar(data = onlymvps, aes(Age, fill="blue")) + 
-  geom_bar(data = nonmvps, aes(Age, fill= "r"))
-```
-
-&lt;img src="presentation_files/figure-html/mvpvsnonmvp-1.png" width="80%" /&gt;
-
-```
+&lt;img src="presentation_files/figure-html/teamwinsplot-1.png" width="90%" /&gt;
+]
+---
 
 
-```r
-# a boring regression
-mvpmodel &lt;- lm(PTS ~ team_wins, data = mvps)
-tidy(mvpmodel)
-```
+# Rank versus Win Shares
 
-```
-## # A tibble: 2 x 5
-##   term        estimate std.error statistic  p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)   29.0      1.69       17.2  1.78e-49
-## 2 team_wins     -0.101    0.0311     -3.23 1.33e- 3
-```
+.pull-left[
+- Win share: a measure that is assigned to players based on their offense, defense, and playing time. A win share is worth one-third of a team win. If a team wins 60 games, there are 180 'Win Shares' to distribute among the players.
 
-```r
-glance(mvpmodel)
-```
-
-```
-## # A tibble: 1 x 12
-##   r.squared adj.r.squared sigma statistic p.value    df logLik   AIC   BIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1    0.0264        0.0239  4.60      10.5 0.00133     1 -1142. 2290. 2301.
-## # … with 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
-```
+- r^2 = 0.3932
+- Stronger correlation between rank and win shares than the other statistics observed
+]
+.pull-right[
 
 
-```r
-# a boring regression
-ggplot(mvps, aes(x= PTS, y= team_wins))+
-  geom_point()+
-  geom_smooth(method = "lm")
-```
+
 
 ```
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-&lt;img src="presentation_files/figure-html/boring-regression3-1.png" width="80%" /&gt;
-
-
-
-
-
-```r
-ggplot(mvps, aes(x=Rank, y=overall_seed)) +
-  geom_jitter()
-```
-
-&lt;img src="presentation_files/figure-html/unnamed-chunk-5-1.png" width="80%" /&gt;
-
-
-```r
-ggplot(mvps, aes(x=overall_seed, fill= Rank)) +
-  geom_bar()
-```
-
-&lt;img src="presentation_files/figure-html/unnamed-chunk-6-1.png" width="80%" /&gt;
+&lt;img src="presentation_files/figure-html/wsplott-1.png" width="90%" /&gt;
+]
 
 
 ---
 
-# Plots
-
-
-&lt;img src="presentation_files/figure-html/positioncount-1.png" width="80%" /&gt;
-&lt;img src="presentation_files/figure-html/positioncount2-1.png" width="80%" /&gt;
-&lt;img src="presentation_files/figure-html/positioncount5-1.png" width="80%" /&gt;
-
-
-
-
-
-
-
-&lt;img src="presentation_files/figure-html/plot-iris-1.png" width="80%" /&gt;
-
----
-
-## Plot and text
+# Combining Variables
 
 .pull-left[
-- Some text
-- goes here
+
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="presentation_files/figure-html/ptsandteamplot-1.png" width="90%" /&gt;
+
+
+
 ]
 .pull-right[
-&lt;img src="presentation_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="presentation_files/figure-html/allvariableplot-1.png" width="90%" /&gt;
 ]
 
----
 
-# Tables
+- The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473.
 
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; Rank &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Player &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Age &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Tm &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; pts_won &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Pts Max &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Share &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; G &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; team_wins &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; overall_seed &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; MP &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; PTS &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; TRB &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; AST &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; STL &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; BLK &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; FG% &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; 3P% &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; FT% &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; WS &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; WS/48 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; VORP &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; BPM &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; G-Lockout &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Wins-Lockout &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; WS-Lockout &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; VORP-Lockout &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Kareem Abdul-Jabbar &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 32 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; LAL &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 147.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.665 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 82 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 60 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 38.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 24.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.604 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.000 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.765 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 14.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.227 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 6.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Julius Erving &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; PHI &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 31.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.143 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 78 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 59 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 36.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 26.9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 7.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.519 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.200 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.787 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 12.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.213 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 6.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 7.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; George Gervin &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; SAS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 19.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.086 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 78 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 37.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 33.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.528 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.314 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.852 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.173 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Larry Bird &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; BOS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 15.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.068 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 82 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 61 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 36.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 21.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 10.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.474 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.406 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.836 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 11.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.182 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Tiny Archibald &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; BOS &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.009 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 80 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 61 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 35.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 14.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.482 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.222 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.830 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.148 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Dennis Johnson &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; SEA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.009 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 81 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 56 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 36.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 19.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.422 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.207 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.780 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 7.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.120 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; NA &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
 
 ---
 
-# Images
+# Conclusion
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1650&amp;q=80" alt="Image credit: Photo by Jörg Angeli on Unsplash." width="60%" /&gt;
-&lt;p class="caption"&gt;Image credit: Photo by Jörg Angeli on Unsplash.&lt;/p&gt;
-&lt;/div&gt;
+- WS is best single predictor out of the 3 we examined
+- The more variables, the better the model would be
+- Overall, no single stat determines who wins MVP, but rather an holistic view
 
-Or you can also include a full page image. See next slide.
 
----
 
-background-image: url(https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1650&amp;q=80)
 
----
 
-# Math Expressions
 
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &amp;#36;\alpha+\beta$ renders `\(\alpha+\beta\)`. You can use the display style with double dollar signs:
-
-```
-`$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`
-```
-
-`$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`
-
-Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
 
 ---
 
-# Feeling adventurous?
-
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
-
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
-
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
-
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

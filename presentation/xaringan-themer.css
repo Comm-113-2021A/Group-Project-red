@@ -132,7 +132,7 @@ a, a > code {
 }
 .title-slide {
   background-color: var(--title-slide-background-color);
-  background-image: url("img/sports.jpg");
+  background-image: url("img/red.jpg");
   background-size: cover;
 }
 .title-slide .remark-slide-number {
