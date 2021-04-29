@@ -78,7 +78,7 @@ class: inverse, center, middle
 
 - slope = -0.247 
 
-- weak correlation between increased rank and greater points per game
+- Weak correlation between increased rank and greater points per game
 
 - Increased prevalence in 3-point shot could suggest that someone ranking 1 in 1979 might be scoring less points per game than someone ranking 10 in 2018. 
 ]
@@ -91,7 +91,12 @@ glance(pts_fit)
 ```{r rankvspointsgraph, warning=FALSE, out.width="80%", fig.width=4, echo=FALSE}
 ggplot(data = mvps, aes(x = PTS, y = Rank)) +
   geom_jitter() +
-   geom_smooth(method = "lm", se = FALSE, col="red")
+   geom_smooth(method = "lm", se = FALSE, col="red") +
+  labs(
+    title= "Rank vs PTS",
+    x="PTS",
+    y= "MVP Rank"
+  )
 ```
 ]
 ---
@@ -117,7 +122,12 @@ glance(rank_team_fit)
 ```{r teamwinsplot, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
 ggplot(data=mvps, mapping=aes(x=team_wins, y=Rank))+
 geom_jitter()+
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", se=FALSE)+
+    labs(
+    title= "Rank vs Team Wins",
+    x="Team Wins",
+    y= "MVP Rank"
+  )
 ```
 ]
 ---
@@ -142,7 +152,12 @@ tidy(rank_ws_fit)
 ```{r wsplott, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
 ggplot(data=mvps, mapping=aes(x=WS, y=Rank))+
 geom_jitter()+
-  geom_smooth(method="lm", se=FALSE )
+  geom_smooth(method="lm", se=FALSE )+
+    labs(
+    title= "Rank vs Win Shares",
+    x="Win Shares",
+    y= "MVP Rank"
+  )
 ```
 ]
 
@@ -159,7 +174,12 @@ summary(rank_PTS_team_wins_fit)
 ```{r ptsandteamplot, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
 ggplot(data=mvps, mapping=aes(x= PTS + team_wins, y=Rank))+
 geom_jitter()+
-  geom_smooth(method="lm", se=FALSE )
+  geom_smooth(method="lm", se=FALSE )+
+    labs(
+    title= "Rank vs PTS + Team Wins",
+    x="PTS + Team Wins",
+    y= "MVP Rank"
+  )
 ```
 ```{r rankfit3stats, include=FALSE}
 rank_PTS_team_WS_fit <- lm(Rank ~ PTS + team_wins + WS, data = mvps)
@@ -171,12 +191,17 @@ glance(rank_PTS_team_WS_fit)
 ```{r allvariableplot, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
 ggplot(data=mvps, mapping=aes(x=WS+team_wins+PTS, y=Rank))+
 geom_jitter()+
-  geom_smooth(method="lm", se=FALSE )
+  geom_smooth(method="lm", se=FALSE )+
+    labs(
+    title= "Rank vs PTS + Team Wins + WS",
+    x="PTS + Team Wins + WS",
+    y= "MVP Rank"
+  )
 ```
 ]
 
 
- ###The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473.
+ ###The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473, an over 50% increase.
 
 
 ---

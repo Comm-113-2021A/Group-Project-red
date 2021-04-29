@@ -5,51 +5,78 @@ Red Team
 ## Summary
 
 For our project we decided to look at a dataset of the top 10 players in
-the mvp race for several NBA seasons. We then compared the player stats
-between the nominated mvp and the other top 9 runner ups in order to
-determine which player stat best correlated with overall performance in
-the mvp race and rankings.
+the mvp race for several NBA seasons. We then looked at the correlation
+between the MVP rank in number of votes to a few selected statistics.
 
 In order to begin, we first compiled data from
 “<https://raw.githubusercontent.com/dribbleanalytics/ml-mvp-predict/master/2018-19-season/asb/final-csv-data/historical-mvps.csv>”
 and loaded it into our project’s data folder.
 
-Write-up of your project and findings go here. Think of this as the text
-of your presentation. The length should be roughly 5 minutes when read
-out loud. Although pacing varies, a 5-minute speech is roughly 750
-words. To use the word count addin, select the text you want to count
-the words of (probably this is the Summary section of this document, go
-to Addins, and select the `Word count` addin). This addin counts words
-using two different algorithms, but the results should be similar and as
-long as you’re in the ballpark of 750 words, you’re good! The addin will
-ignore code chunks and only count the words in prose.
+We used three variables: points per game, win shares, and team win total
+and compared how well they can predict mvp success. We chose these three
+stats in particular because points per game measures strictly individual
+success and talent, team wins measures strictly team success and then
+win shares, which is an estimate of how many wins a player contributes
+to their team in a given year, measures how a player impacts his team
+success. We hypothesized that since win shares is literally a measure of
+a players value to their team in terms of wins added, it would most
+strongly correlate with a players rank in the Most Valuable Player
+category, at least compared to the other stats. We also theorized that
+team wins, though important to MVP, doesn’t provide enough context to
+how well that player actually contributed to his team and thus would
+have a weak correlation.
 
-You can also load your data here and present any analysis results /
-plots, but I strongly urge you to keep that to a minimum (maybe only the
-most important graphic, if you have one you can choose). And make sure
-to hide your code with `echo = FALSE` unless the point you are trying to
-make is about the code itself. Your results with proper output and
-graphics go in your presentation, this space is for a brief summary of
-your project.
+Our first statistic that we analyzed was points per game and its
+correlation with player rank in the MVP race. Plotting a linear
+regression model showed that there was a negative correlation between
+rank and points per game indicating that on average, the more points a
+player scored, the better ranked they would place in the MVP running,
+however it was very weak with r^2=0.165. One explanation for the weak
+trend is that points per game have increased throughout the years
+because of increased prevalence in 3-point shot, which could suggest
+that someone ranking 1 in 1979 might be scoring less points per game
+than someone ranking 10 in 2018. Another reason why the correlation
+lacked significance is because we used such a wide range of MVP
+placements. Typically the top scorers will place relatively high in mvp
+ranking, but other stats and team accomplishments is what differentiates
+them.
 
-``` r
-library(tidyverse) 
-```
+Our second statistic that we analyzed was team wins and its correlation
+to a player’s rank in the MVP race. We again saw a negative correlation
+with the more team wins, the better (lower) ranking a player would have.
+However, as the graph suggests and the very low r^2 value of 0.0983, the
+linear model is not a strong predictor for this data, which we predicted
+at the beginning. One explanation of this could be that players could be
+put in the top-10 just because they are on a good team, even though they
+have no chance of winning MVP which could cause worse ranked players to
+have a large amount of wins. It is clear that team wins is not a good
+predictor of a player’s MVP rank because it is too broad.
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
+Our third statistic is win shares and as we predicted, it had the
+highest r^2 value out of the three statistics we looked at. It had an
+r^2 value of 0.393, which is significantly higher than the other two.
+One reason that this value wasn’t higher was due to the fact that win
+shares does not take into account minutes played or whether the player
+got injured or not during the season, but are still eligible to win MVP.
 
-    ## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
-    ## ✓ tibble  3.0.6     ✓ dplyr   1.0.4
-    ## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
-    ## ✓ readr   1.4.0     ✓ forcats 0.5.1
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
-library(skimr)
-```
+After looking at all three statistics separately, we realized that no
+one statistic has a strong correlation with one’s MVP rank. So we
+decided to combine the statistics together. We first combined points per
+game and team wins to see if that would provide a better relationship.
+However, the r^2 value of that was only 0.314, which was higher than
+them separately, but still not as high as just using win shares. We then
+combined all three statistics together to hopefully create a strong
+correlation with the linear model. This model had a r^2 value of 0.473,
+which is the highest value we saw throughout our research. This suggests
+that almost 50% of the variability in this data can be explained by this
+model. Although this is not great, this definitely proves that there is
+some correlation between these three statistics and rank. But overall,
+we realized that not one statistic can be used to explain a player’s MVP
+rank in an useful manner. The more predictors that could be used, the
+more likely the model would become stronger and explain the variability
+better. If we added all twenty statistics that were given in our data,
+we would expect to have a great model in showing a relationship with MVP
+rank.
 
 ## Presentation
 
@@ -57,12 +84,15 @@ Our presentation can be found [here](presentation/presentation.html)
 
 ## Data
 
-Include a citation for your data here. See
-<http://libraryguides.vu.edu.au/c.php?g=386501&p=4347840> for guidance
-on proper citation for datasets. If you got your data off the web, make
-sure to note the retrieval date.
+Citation:
+
+Boger, Tal, 2020. “Historical MVPs.” viewed April 22,
+2021https://github.com/dribbleanalytics/ml-mvp-predict/blob/f4465099296270d889761efad127201201bb7613/2018-19-season/asb/final-csv-data/historical-mvps.csv.
 
 ## References
 
-List any references here. You should, at a minimum, list your data
-source.
+-Github,
+<https://github.com/dribbleanalytics/ml-mvp-predict/blob/f4465099296270d889761efad127201201bb7613/2018-19-season/asb/final-csv-data/historical-mvps.csv>
+
+-Basketball Reference,
+<https://www.basketball-reference.com/about/ws.html>

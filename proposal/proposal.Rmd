@@ -29,7 +29,7 @@ https://github.com/dribbleanalytics/ml-mvp-predict/blob/master/2018-19-season/as
 
 ```{r data, eval=TRUE}
 library(readr)
-historical_mvps <- read_csv("proposal/historical-mvps.csv")
+historical_mvps <- read_csv("proposal_file/historical-mvps.csv")
 View(historical_mvps)
 
 ```
@@ -43,6 +43,6 @@ View(historical_mvps)
 Response: MVP voting rank
 Explanatory: points per game, team wins, win shares
 
-We want to make linear models for each explanatory variable and see which has a stronger relationship by looking at the r^2 value and the graph themselves. We will also combine variables together to see if that provides a stronger relationship. 
+We want to make linear models for each explanatory variable and see which has a stronger relationship by looking at the r^2 value and the graph themselves. We will also combine variables together to see if that provides a stronger relationship as compared to just the single statistic. 
 
 
