@@ -1,6 +1,6 @@
 ---
 title: "Project proposal"
-author: "Team name"
+author: "Red Team"
 output: github_document
 ---
 
@@ -11,23 +11,27 @@ library(broom)
 
 ## 1. Introduction
 
- Question: Which position in the NBA is most likely to win an award (MVP, First-Team, Rookie of the Year)?
-We will explore if there is a certain position in the NBA that is more likely to get an end of season award than others. Also, we will evaluate if this distribution has changed over the years as the NBA has changed. 
+ Question: Which statistic in the NBA is most likely to correlate to MVP rank?
+We will explore if there is a certain statistic in the NBA that has stronger relationship to rank than others. We will specifically look at points per game, team wins, and win shares. We predict that win shares will have the highest predictive power because it takes into consideration both individual player stats and how impact they are on their team. 
 
-variables: position, type of award, player ID, year
-cases: each NBA player who has won award since 1946
-data from: Open Source Sports Website
-does team success correspond to individual player success?
+variables: rank, pts per game, team wins, win shares
+cases: top 10 NBA players in MVP voting race from 1979-2018
+data from: Github
+https://github.com/dribbleanalytics/ml-mvp-predict/blob/master/2018-19-season/asb/final-csv-data/historical-mvps.csv
+
 
 ## 2. Data
 
 
 2) (code in awards.Rmd)
 
-1719 rows, 6 columns
+388 rows, 27 columns
 
 ```{r data, eval=TRUE}
-read.csv(file = 'data/awards.csv', header = FALSE)
+library(readr)
+historical_mvps <- read_csv("proposal/historical-mvps.csv")
+View(historical_mvps)
+
 ```
 
 
@@ -36,9 +40,9 @@ read.csv(file = 'data/awards.csv', header = FALSE)
 ## 3. Data analysis plan
 
 3)
-Response: frequency of MVP, NBA First-Team, and Rookie of Year among G,F and C
-Explanatory: type of award
+Response: MVP voting rank
+Explanatory: points per game, team wins, win shares
 
-We made tentative graph but need to select certain awards and format it better. We also want to make a model that shows the year on x-axis and frequency on y with each point representing if a certain position earned an award in that year. 
+We want to make linear models for each explanatory variable and see which has a stronger relationship by looking at the r^2 value and the graph themselves. We will also combine variables together to see if that provides a stronger relationship. 
 
 

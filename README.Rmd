@@ -30,51 +30,7 @@ library(tidyverse)
 library(skimr)
 ```
 
-```{r load-data, echo = FALSE}
-awards <- read_csv("data/awards.csv") 
-```
-```{r}
-library(readr)
-draft <- read_csv("data/basketball_draft (1).csv")
-View(basketball_draft_1_)
-```
 
-
-
-```{r}
-joined_data <- left_join(draft, awards, 
-              by = c(playerID = "playerID")) +
-view(joined_data)
-```
-```{r}
-library(readr)
-basketball <- read_csv("data/basketball_master.csv")
-View(basketball_master)
-```
-```{r}
-basketball <- basketball%>% 
-  rename(
-    playerID = bioID,
-  )
-```
-
-
-```{r}
-full_data <- left_join(joined_data, basketball, 
-              by = c(playerID = "playerID"))  
-view(full_data)
-
-```
-
-
-```{r}
-full_data <- full_data %>% 
-    if (award = is.na){
-    print ("0")
-} else {
-    print ("1")
-}
-```
 ```{r}
 library(readr)
 historical_mvps <- read_csv("presentation/historical-mvps.csv")
@@ -92,7 +48,8 @@ mvps <- historical_mvps %>%
 
 ## Presentation
 
-Our presentation can be found  https://comm-113-2021a.github.io/Group-Project-red/
+Our presentation can be found https://7947391ee1ac4d308607817081df3365.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fpresentation%2Fpresentation.html#1
+
 
 ## Data 
 

@@ -33,7 +33,7 @@ class: center, middle, inverse, title-slide
 
 class: center, middle
 
-## What is strongest stat in predicting MVP rank?
+## What is stat has strongest relationship to MVP rank?
 
   
 ---
@@ -41,16 +41,22 @@ class: center, middle
 class: inverse, center, middle
 
 # We will look at...
-   #Points per game
-   #Team wins
-   #Win Shares
+   ##1) Points per game
+   ##2) Team wins
+   ##3) Win Shares
 
 ---
 
 # Rank versus Points per Game
 .pull-left[
-- r^2 = 0.165
-- Not a strong correlation between increased rank and greater points per game
+
+- **r^2 = 0.165** 
+
+- slope = -0.247 
+
+- weak correlation between increased rank and greater points per game
+
+- Increased prevalence in 3-point shot could suggest that someone ranking 1 in 1979 might be scoring less points per game than someone ranking 10 in 2018. 
 ]
 .pull-right[
 
@@ -63,14 +69,16 @@ class: inverse, center, middle
 ]
 ---
 
-class: inverse, middle, center
+class: inverse
 
 # Rank versus Team Wins
 
 .pull-left[
-- r^2 = 0.0.983
+- **r^2 = 0.0983**
+
 - Very weak correlation between rank and  team wins
-- One explanation of this could be that players  could be put in the top-10 just because they are on a good team, even though they have no chance of winning MVP
+
+- One explanation of this could be that players could be put in the top-10 just because they are on a good team, even though they have no chance of winning MVP
 ]
 .pull-right[
 
@@ -88,9 +96,9 @@ class: inverse, middle, center
 # Rank versus Win Shares
 
 .pull-left[
-- Win share: a measure that is assigned to players based on their offense, defense, and playing time. A win share is worth one-third of a team win. If a team wins 60 games, there are 180 'Win Shares' to distribute among the players.
+- "Win share: a measure that is assigned to players based on their offense, defense, and playing time. A win share is worth one-third of a team win. If a team wins 60 games, there are 180 'Win Shares' to distribute among the players."
 
-- r^2 = 0.3932
+- **r^2 = 0.3932**
 - Stronger correlation between rank and win shares than the other statistics observed
 ]
 .pull-right[
@@ -119,8 +127,6 @@ class: inverse, middle, center
 
 &lt;img src="presentation_files/figure-html/ptsandteamplot-1.png" width="90%" /&gt;
 
-
-
 ]
 .pull-right[
 
@@ -132,24 +138,19 @@ class: inverse, middle, center
 ]
 
 
-- The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473.
+ ###The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473.
 
 
 ---
 
 # Conclusion
 
-- WS is best single predictor out of the 3 we examined
-- The more variables, the better the model would be
-- Overall, no single stat determines who wins MVP, but rather an holistic view
+  ###WS is the best single predictor out of the 3 we examined
+  ###The more variables, the better the model would be
+  #Overall, no single stat determines who wins MVP, but rather an holistic view
 
 
 
-
-
-
-
----
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
