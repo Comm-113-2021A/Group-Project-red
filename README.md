@@ -1,9 +1,18 @@
-Prediction of what position is more likely to win the NBA end of season
-awards
+What statistic is most useful in predicting a player’s NBA MVP rank?
 ================
 Red Team
 
 ## Summary
+
+For our project we decided to look at a dataset of the top 10 players in
+the mvp race for several NBA seasons. We then compared the player stats
+between the nominated mvp and the other top 9 runner ups in order to
+determine which player stat best correlated with overall performance in
+the mvp race and rankings.
+
+In order to begin, we first compiled data from
+“<https://raw.githubusercontent.com/dribbleanalytics/ml-mvp-predict/master/2018-19-season/asb/final-csv-data/historical-mvps.csv>”
+and loaded it into our project’s data folder.
 
 Write-up of your project and findings go here. Think of this as the text
 of your presentation. The length should be roughly 5 minutes when read
@@ -23,9 +32,29 @@ make is about the code itself. Your results with proper output and
 graphics go in your presentation, this space is for a brief summary of
 your project.
 
+``` r
+library(tidyverse) 
+```
+
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
+
+    ## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
+    ## ✓ tibble  3.0.6     ✓ dplyr   1.0.4
+    ## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+    ## ✓ readr   1.4.0     ✓ forcats 0.5.1
+
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
+library(skimr)
+```
+
 ## Presentation
 
-Our presentation can be found  https://comm-113-2021a.github.io/Group-Project-red/
+Our presentation can be found [here](presentation/presentation.html)
+
 ## Data
 
 Include a citation for your data here. See

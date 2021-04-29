@@ -57,7 +57,7 @@ style_xaringan(
 
 class: center, middle
 
-## What is stat has strongest relationship to MVP rank?
+## What stat has strongest relationship to MVP rank?
 
   
 ---

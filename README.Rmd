@@ -1,5 +1,5 @@
 ---
-title: Prediction of what position is more likely to win the NBA end of season awards
+title: What statistic is most useful in predicting a player's NBA MVP rank?
 author: Red Team
 output: github_document
 ---
@@ -31,25 +31,10 @@ library(skimr)
 ```
 
 
-```{r}
-library(readr)
-historical_mvps <- read_csv("presentation/historical-mvps.csv")
-View(historical_mvps)
-```
-```{r}
-mvps <- historical_mvps %>% 
-  rename(
-    team_wins = "Team Wins",
-    pts_won = "Pts Won",
-    overall_seed = "Overall Seed"
-  )
-```
-
 
 ## Presentation
 
-Our presentation can be found https://7947391ee1ac4d308607817081df3365.app.rstudio.cloud/file_show?path=%2Fcloud%2Fproject%2Fpresentation%2Fpresentation.html#1
-
+Our presentation can be found [here](presentation/presentation.html)
 
 ## Data 
 
