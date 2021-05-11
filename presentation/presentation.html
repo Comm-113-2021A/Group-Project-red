@@ -4,7 +4,7 @@
     <title>What stat is most useful in predicting MVP vote rankings?</title>
     <meta charset="utf-8" />
     <meta name="author" content="Red Team   Naomi Korn, Stephen Chen, Zach Slavitt" />
-    <meta name="date" content="2021-04-29" />
+    <meta name="date" content="2021-05-11" />
     <script src="libs/header-attrs-2.7/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -15,7 +15,7 @@ class: center, middle, inverse, title-slide
 # What stat is most useful in predicting MVP vote rankings?
 ## We will use data from 1979-2018 NBA seasons
 ### Red Team <br> Naomi Korn, Stephen Chen, Zach Slavitt
-### 2021-04-29
+### 2021-05-11
 
 ---
 
@@ -68,7 +68,22 @@ class: inverse, center, middle
 &lt;img src="presentation_files/figure-html/rankvspointsgraph-1.png" width="80%" /&gt;
 ]
 ---
+# Rank versus Points per Game Residual Plot
+.pull-left[
 
+
+
+
+  
+
+
+
+&lt;img src="presentation_files/figure-html/residuals-1.png" width="80%" /&gt;
+]
+
+
+It is clear that this residual plot has a downward sloping pattern, suggesting it is not a good fit because of the points not being randomly distributed throughout the plot. 
+---
 class: inverse
 
 # Rank versus Team Wins
@@ -141,6 +156,29 @@ class: inverse
  ###The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473, an over 50% increase.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
 
 # Conclusion
@@ -148,6 +186,7 @@ class: inverse
   ###WS is the best single predictor out of the 3 we examined
   ###The more variables, the better the model would be
   #Overall, no single stat determines who wins MVP, but rather an holistic view
+  
 
 
 

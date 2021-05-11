@@ -20,7 +20,7 @@ using the following format.
 
 - `Age`: age of player when voting occurred
 
--`Tm`: current NBA team player is on
+- `Tm`: current NBA team player is on
 
 - `Pts Won`: amount of points received in MVP voting race
 

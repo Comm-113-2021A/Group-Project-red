@@ -24,6 +24,8 @@ library(knitr)
 library(xaringanthemer)
 library(showtext)
 library(openintro)
+library(dsbox)
+library(forcats)
 ```
 
 ```{r setup, include=FALSE}
@@ -100,7 +102,36 @@ ggplot(data = mvps, aes(x = PTS, y = Rank)) +
 ```
 ]
 ---
+# Rank versus Points per Game Residual Plot
+.pull-left[
 
+```{r, include=FALSE}
+glance(pts_fit)
+```
+
+```{r ptsuag, include=FALSE}
+
+pts_aug <- augment(pts_fit)
+
+
+```
+  
+
+
+```{r, include=FALSE}
+names(pts_aug)
+```
+```{r residuals, echo=FALSE}
+pts_aug %>%
+ggplot(mapping = aes(x = .fitted, y = .resid)) +
+  geom_jitter() +
+ geom_hline(yintercept = 0)
+```
+]
+
+
+It is clear that this residual plot has a downward sloping pattern, suggesting it is not a good fit because of the points not being randomly distributed throughout the plot. 
+---
 class: inverse
 
 # Rank versus Team Wins
@@ -191,7 +222,7 @@ glance(rank_PTS_team_WS_fit)
 ```{r allvariableplot, warning=FALSE, out.width="90%", fig.width=4, echo=FALSE}
 ggplot(data=mvps, mapping=aes(x=WS+team_wins+PTS, y=Rank))+
 geom_jitter()+
-  geom_smooth(method="lm", se=FALSE )+
+  geom_smooth(method="glm", se=FALSE )+
     labs(
     title= "Rank vs PTS + Team Wins + WS",
     x="PTS + Team Wins + WS",
@@ -204,6 +235,57 @@ geom_jitter()+
  ###The addition of WS into the prediction model strengthens the model. It increases the r^2 from 0.314 to 0.473, an over 50% increase.
 
 
+
+```{r, include=FALSE}
+data(mvps)
+```
+
+
+```{r eval=TRUE, include=FALSE}
+mvp_three <- mvps %>%
+  select(PTS, team_wins, WS, Rank) %>%
+  drop_na()
+```
+
+```{r eval=TRUE, include=FALSE}
+set.seed(123)
+mvps_split <- initial_split(mvp_three, prop=0.75)
+mvps_train <- training(mvps_split)
+mvps_test  <- testing(mvps_split)
+```
+
+
+```{r recipe1, eval=TRUE, include=FALSE}
+mvp_rec <- recipe(Rank ~ PTS+WS+team_wins, data = mvps_train) 
+```
+
+
+
+```{r logistic, eval=TRUE, include=FALSE}
+mvps_spec <- logistic_reg() %>%
+  set_engine("glm")
+```
+
+```{r wflow1, eval=TRUE, include=FALSE}
+mvps_wflow_1 <- workflow() %>%
+  add_model(mvps_spec) %>%
+  add_recipe(mvp_rec)
+```
+
+
+```{r folds, eval=TRUE, include=FALSE}
+set.seed(123)
+mvps_folds <- vfold_cv(mvps_train, v = 5)
+
+mvps_fit_rs_1 <- mvps_wflow_1 %>%
+  fit_resamples(mvps_folds)
+
+collect_metrics(mvps_fit_rs_1, summarize = FALSE)
+```
+
+
+
+
 ---
 
 # Conclusion
@@ -211,6 +293,7 @@ geom_jitter()+
   ###WS is the best single predictor out of the 3 we examined
   ###The more variables, the better the model would be
   #Overall, no single stat determines who wins MVP, but rather an holistic view
+  
 
 
 
